@@ -32,8 +32,10 @@ def create_order(order: OrderCreate): # ham va ten ham khai bao don hang moi cua
     new_order = Order(id=current_id, **order.dict()) #tao don hang moi, voi id tu tao, cac thuoc tinh con lai lay tu order
     order_db.append(new_order) #them don hang moi vao db
     current_id += 1 #id tang them 1 cho don hang tiep theo
-    return new_order # tra ve don hang moi duoc khach tao
-
+    return {
+        "message": "Tạo đơn hàng thành công",
+        "order": new_order
+    } # tra ve don hang moi duoc khach tao
 # READ: lay tat ca don hang
 
 @app.get("/orders", response_model=List[Order]) #khai bao duong dan lay tat ca don hang
@@ -45,7 +47,10 @@ def get_orders(): # ham va ten ham lay don
 def get_order(order_id: int): # ham va ten ham lay don hang theo ID
     for order in order_db: # lay don hang trong ds 
         if order.id == order_id: # neu id don hang trung 
-            return order # tra ve don hang
+            return {
+                "message": "Đon hàng được đặt thành công",
+                "order": order
+            } # tra ve don hang
     raise HTTPException(status_code=404, detail="Không tìm thấy đơn hàng") # kh tim thay don vi trung id
 
 # UPDATE: cap nhat don hang cua khach theo ID
@@ -56,7 +61,10 @@ def update_order(order_id: int, updated_order: OrderCreate): #ham va ten ham cap
         if order.id == order_id: #trung id can upddate
             new_order = Order(id=order_id, **updated_order.dict()) # don hang moi lay id da tao va cap nhat cac thuoc tinh don hang khach dat
             order_db[idx] = new_order #ds don hang chua bien idx de cap nhat gio tro thanh don hang moi
-            return new_order # tra ve don hang khach dat
+            return {
+                "message": "Cập nhật đã được cập nhật thành công",
+                "order": new_order
+            } # tra ve don hang da cap nhat
     raise HTTPException(status_code=404, detail="Không tìm thấy đơn hàng") # neu id kh trung
 
 # DELETE: xoa don hang theo ID
